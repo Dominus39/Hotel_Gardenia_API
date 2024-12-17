@@ -47,7 +47,9 @@ func main() {
 
 	private := e.Group("")
 	private.Use(internal.CustomJwtMiddleware)
-	private.GET("/activities", handler.GetUserActivities)
+	private.POST("/rooms/booking", handler.BookRoom)
+
+	private.GET("/history", handler.GetHistory)
 
 	port := os.Getenv("PORT")
 	if port == "" {

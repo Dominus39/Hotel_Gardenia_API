@@ -7,7 +7,7 @@ import (
 )
 
 func TrackUserActivity(userID int, description string) {
-	activityLog := entity.UserActivityLog{
+	activityLog := entity.UserHistory{
 		UserID:      userID,
 		Description: description,
 	}

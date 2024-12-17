@@ -20,7 +20,7 @@ import (
 // @Success 200 {object} map[string]interface{} "Success message and list of user activities"
 // @Failure 500 {object} map[string]interface{} "Failed to retrieve activities"
 // @Router /activities [get]
-func GetUserActivities(c echo.Context) error {
+func GetHistory(c echo.Context) error {
 	// Retrieve the current user from the context (set by the JWT middleware)
 	userClaims, ok := c.Get("user").(jwt.MapClaims)
 	if !ok {
@@ -37,17 +37,17 @@ func GetUserActivities(c echo.Context) error {
 		})
 	}
 
-	// Query user activities from the database
-	var activities []entity.UserActivityLog
-	if err := config.DB.Where("user_id = ?", int(currentUserID)).Order("created_at desc").Find(&activities).Error; err != nil {
+	// Query user histories from the database
+	var history []entity.UserHistory
+	if err := config.DB.Where("user_id = ?", int(currentUserID)).Order("created_at desc").Find(&history).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": "Failed to retrieve activities",
+			"message": "Failed to retrieve history",
 		})
 	}
 
 	// Prepare the response
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":    "User activities retrieved successfully",
-		"activities": activities,
+		"message": "User history retrieved successfully",
+		"history": history,
 	})
 }

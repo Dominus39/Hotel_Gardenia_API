@@ -50,7 +50,7 @@ type Payment struct {
 	CreatedAt time.Time  `json:"created_at" gorm:"autoCreateTime"`
 }
 
-type UserActivityLog struct {
+type UserHistory struct {
 	ID           int       `json:"id" gorm:"not null;primaryKey"`
 	UserID       int       `json:"user_id" gorm:"column:user_id;not null"`      // FK to User
 	User         User      `json:"user" gorm:"foreignKey:UserID;references:ID"` // Correct FK
