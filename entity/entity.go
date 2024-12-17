@@ -24,16 +24,16 @@ type Room struct {
 	Name       string    `json:"name" gorm:"not null;size:255"` // Room name or identifier
 	CategoryID int       `json:"category_id" gorm:"not null"`   // FK to Category
 	Category   Category  `json:"category" gorm:"foreignKey:CategoryID"`
-	Stock      int       `json:"stock" gorm:"not null"`              // Available rooms
-	Bookings   []Booking `json:"bookings" gorm:"foreignKey:HotelID"` // Related bookings
+	Stock      int       `json:"stock" gorm:"not null"`             // Available rooms
+	Bookings   []Booking `json:"bookings" gorm:"foreignKey:RoomID"` // Related bookings
 }
 
 type Booking struct {
 	ID         int       `json:"id" gorm:"primaryKey;autoIncrement"`
 	UserID     int       `json:"user_id" gorm:"not null"` // FK to User
 	User       User      `json:"user" gorm:"foreignKey:UserID"`
-	RoomID     int       `json:"room_id" gorm:"not null"` // FK to Hotel
-	Room       Room      `json:"room" gorm:"foreignKey:HotelID"`
+	RoomID     int       `json:"room_id" gorm:"not null"` // FK to Room
+	Room       Room      `json:"room" gorm:"foreignKey:RoomID"`
 	StartDate  time.Time `json:"start_date" gorm:"not null"`       // Start of booking
 	EndDate    time.Time `json:"end_date" gorm:"not null"`         // End of booking
 	TotalPrice float64   `json:"total_price" gorm:"not null"`      // Total cost

@@ -42,6 +42,8 @@ func main() {
 	public := e.Group("")
 	public.POST("/users/register", handler.Register)
 	public.POST("/users/login", handler.LoginUser)
+	public.GET("/rooms", handler.GetRooms)
+	public.GET("/rooms/:id", handler.GetRoomByID)
 
 	private := e.Group("")
 	private.Use(internal.CustomJwtMiddleware)
