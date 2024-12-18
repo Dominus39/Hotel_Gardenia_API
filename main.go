@@ -48,6 +48,7 @@ func main() {
 	private := e.Group("")
 	private.Use(internal.CustomJwtMiddleware)
 	private.POST("/rooms/booking", handler.BookRoom)
+	private.DELETE("/rooms/booking/:id", handler.CancelBooking)
 
 	private.GET("/history", handler.GetHistory)
 

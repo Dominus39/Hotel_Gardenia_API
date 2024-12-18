@@ -36,3 +36,7 @@ type BookingResponse struct {
 	Category   string  `json:"category"`
 	TotalPrice float64 `json:"total_price"`
 }
+
+type CancelBookingRequest struct {
+	BookingID int `json:"booking_id" validate:"required"`
+}
