@@ -43,15 +43,15 @@ func main() {
 	public.POST("/users/register", handler.Register)
 	public.POST("/users/login", handler.LoginUser)
 	public.GET("/rooms", handler.GetRooms)
-	public.GET("/rooms/:id", handler.GetRoomByID)
 
 	private := e.Group("")
 	private.Use(internal.CustomJwtMiddleware)
+	private.GET("/rooms/users", handler.GetUserRooms)
 	private.POST("/rooms/booking", handler.BookRoom)
 	private.DELETE("/rooms/booking/:id", handler.CancelBooking)
 	private.POST("/users/topup", handler.TopUpBalance)
 
-	private.GET("/history", handler.GetHistory)
+	private.GET("/users/history", handler.GetHistory)
 
 	port := os.Getenv("PORT")
 	if port == "" {
