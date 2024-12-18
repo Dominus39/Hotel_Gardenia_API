@@ -46,3 +46,13 @@ type UpdateBookingRequest struct {
 	NewDays   int       `json:"new_days,omitempty"`
 	StartDate time.Time `json:"start_date,omitempty"`
 }
+
+type ProductRequest struct {
+	Name  string  `json:"name"`
+	Price float64 `json:"price"`
+}
+
+type CustomerRequest struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}

@@ -67,3 +67,8 @@ type UserHistory struct {
 	ReferenceID  int       `json:"reference_id" gorm:"column:reference_id"`           // Optional ID for related actions
 	CreatedAt    time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
+
+type Invoice struct {
+	ID         string `json:"id"`
+	InvoiceUrl string `json:"invoice_url"`
+}

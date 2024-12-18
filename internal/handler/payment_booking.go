@@ -3,6 +3,7 @@ package handler
 import (
 	config "MiniProjectPhase2/config/database"
 	"MiniProjectPhase2/entity"
+	"MiniProjectPhase2/utils"
 	"net/http"
 	"strconv"
 	"time"
@@ -109,6 +110,12 @@ func PayBooking(c echo.Context) error {
 	}
 	if err := config.DB.Create(&userHistory).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to record user activity"})
+	}
+
+	// Create the invoice via Xendit API
+	_, err = utils.CreateInvoice(booking, userAcc)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to create invoice", "error": err.Error()})
 	}
 
 	// Respond with success message
