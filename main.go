@@ -49,6 +49,7 @@ func main() {
 	private.Use(internal.CustomJwtMiddleware)
 	private.POST("/rooms/booking", handler.BookRoom)
 	private.DELETE("/rooms/booking/:id", handler.CancelBooking)
+	private.POST("/users/topup", handler.TopUpBalance)
 
 	private.GET("/history", handler.GetHistory)
 

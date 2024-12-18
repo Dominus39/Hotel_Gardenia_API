@@ -37,6 +37,6 @@ type BookingResponse struct {
 	TotalPrice float64 `json:"total_price"`
 }
 
-type CancelBookingRequest struct {
-	BookingID int `json:"booking_id" validate:"required"`
+type TopUpRequest struct {
+	Amount float64 `json:"amount" validate:"required"`
 }

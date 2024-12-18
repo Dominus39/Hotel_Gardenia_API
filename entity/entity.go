@@ -50,6 +50,14 @@ type Payment struct {
 	CreatedAt time.Time  `json:"created_at" gorm:"autoCreateTime"`
 }
 
+type PaymentForTopUp struct {
+	ID        int       `json:"id" gorm:"primaryKey;autoIncrement"`
+	UserID    int       `json:"user_id" gorm:"not null"` // FK to User
+	User      User      `json:"user" gorm:"foreignKey:UserID;references:ID"`
+	Amount    float64   `json:"amount" gorm:"not null"` // Payment amount
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
+}
+
 type UserHistory struct {
 	ID           int       `json:"id" gorm:"not null;primaryKey"`
 	UserID       int       `json:"user_id" gorm:"column:user_id;not null"`      // FK to User
