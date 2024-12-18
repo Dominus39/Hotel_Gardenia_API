@@ -3,6 +3,7 @@ package handler
 import (
 	config "MiniProjectPhase2/config/database"
 	"MiniProjectPhase2/entity"
+	"MiniProjectPhase2/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -60,6 +61,11 @@ func Register(c echo.Context) error {
 	userID, err := CreateUser(req.Name, req.Email, string(hashPassword))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Register Failed"})
+	}
+
+	// Send email notification
+	if err := utils.SendWelcomeEmail(req.Email, req.Name); err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to send welcome email"})
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{

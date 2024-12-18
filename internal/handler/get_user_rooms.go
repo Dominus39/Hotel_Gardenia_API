@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// GetBookedRooms godoc
+// GetUserRooms godoc
 // @Summary Get booked rooms for the authenticated user
 // @Description Fetch all rooms currently booked by the authenticated user, including payment status.
 // @Tags Rooms
