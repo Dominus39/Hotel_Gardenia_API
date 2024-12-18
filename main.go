@@ -49,6 +49,7 @@ func main() {
 	private.GET("/rooms/users", handler.GetUserRooms)
 	private.POST("/rooms/booking", handler.BookRoom)
 	private.POST("/rooms/update/:id", handler.UpdateBooking)
+	private.POST("/rooms/payment/:id", handler.PayBooking)
 	private.DELETE("/rooms/booking/:id", handler.CancelBooking)
 	private.POST("/users/topup", handler.TopUpBalance)
 
