@@ -40,3 +40,9 @@ type BookingResponse struct {
 type TopUpRequest struct {
 	Amount float64 `json:"amount" validate:"required"`
 }
+
+type UpdateBookingRequest struct {
+	NewRoomID int       `json:"new_room_id,omitempty"`
+	NewDays   int       `json:"new_days,omitempty"`
+	StartDate time.Time `json:"start_date,omitempty"`
+}
