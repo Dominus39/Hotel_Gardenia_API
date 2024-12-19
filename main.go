@@ -46,12 +46,13 @@ func main() {
 
 	private := e.Group("")
 	private.Use(internal.CustomJwtMiddleware)
-	private.GET("/rooms/users", handler.GetUserRooms)
+	private.GET("/users/profile", handler.UserProfile)
+	private.POST("/users/topup", handler.TopUpBalance)
 	private.POST("/rooms/booking", handler.BookRoom)
+	private.GET("/rooms/users", handler.GetUserRooms)
 	private.POST("/rooms/update/:id", handler.UpdateBooking)
 	private.POST("/rooms/payment/:id", handler.PayBooking)
 	private.DELETE("/rooms/booking/:id", handler.CancelBooking)
-	private.POST("/users/topup", handler.TopUpBalance)
 
 	private.GET("/users/history", handler.GetHistory)
 

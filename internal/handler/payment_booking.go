@@ -10,6 +10,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 // PayBooking godoc
@@ -57,11 +58,22 @@ func PayBooking(c echo.Context) error {
 	}
 
 	// Check if a payment already exists for this booking
-	var payment entity.Payment
-	paymentExists := config.DB.Where("booking_id = ?", bookingID).First(&payment).Error == nil
+	var payment entity.PaymentForBooking
+	var paymentExists bool
+
+	err = config.DB.Where("booking_id = ?", bookingID).First(&payment).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			paymentExists = false
+		} else {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to query payment record"})
+		}
+	} else {
+		paymentExists = true
+	}
 
 	// If payment exists and is already paid, return an error
-	if paymentExists && payment.IsPaid {
+	if paymentExists && booking.IsPaid {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Booking is already paid"})
 	}
 
@@ -84,17 +96,17 @@ func PayBooking(c echo.Context) error {
 
 	// Create or update the payment record
 	if paymentExists {
-		payment.IsPaid = true
-		payment.PaidAt = timePtr(time.Now())
+		booking.IsPaid = true
+		payment.CreatedAt = time.Now()
 		if err := config.DB.Save(&payment).Error; err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to update payment record"})
 		}
 	} else {
-		payment = entity.Payment{
+		booking.IsPaid = true
+		payment = entity.PaymentForBooking{
 			BookingID: booking.ID,
 			Amount:    booking.TotalPrice,
-			IsPaid:    true,
-			PaidAt:    timePtr(time.Now()),
+			CreatedAt: time.Now(),
 		}
 		if err := config.DB.Create(&payment).Error; err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to create payment record"})
@@ -125,11 +137,7 @@ func PayBooking(c echo.Context) error {
 		"room_name":   booking.Room.Name,
 		"total_price": booking.TotalPrice,
 		"balance":     userAcc.Balance,
-		"is_paid":     payment.IsPaid,
-		"paid_at":     payment.PaidAt,
+		"is_paid":     booking.IsPaid,
+		"paid_at":     payment.CreatedAt,
 	})
-}
-
-func timePtr(t time.Time) *time.Time {
-	return &t
 }

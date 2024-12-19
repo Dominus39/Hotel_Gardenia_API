@@ -24,6 +24,13 @@ type RoomResponse struct {
 	Stock    int     `json:"stock"`
 }
 
+type UserProfileResponse struct {
+	ID      int     `json:"id"`
+	Name    string  `json:"name"`
+	Email   string  `json:"email"`
+	Balance float64 `json:"balance"`
+}
+
 type BookingRequest struct {
 	RoomID    int       `json:"room_id" validate:"required"`
 	StartDate time.Time `json:"start_date" validate:"required"`
@@ -35,6 +42,18 @@ type BookingResponse struct {
 	RoomName   string  `json:"room_name"`
 	Category   string  `json:"category"`
 	TotalPrice float64 `json:"total_price"`
+}
+
+type GetUserRoomsResponse struct {
+	BookingID  int       `json:"booking_id"`
+	RoomID     int       `json:"room_id"`
+	RoomName   string    `json:"room_name"`
+	Category   string    `json:"category"`
+	Price      float64   `json:"price"`
+	StartDate  time.Time `json:"start_date"`
+	EndDate    time.Time `json:"end_date"`
+	TotalPrice float64   `json:"total_price"`
+	IsPaid     bool      `json:"is_paid"`
 }
 
 type TopUpRequest struct {

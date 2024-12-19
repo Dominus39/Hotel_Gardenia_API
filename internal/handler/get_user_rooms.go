@@ -42,33 +42,32 @@ func GetUserRooms(c echo.Context) error {
 	// Query the bookings for the authenticated user and preload room, category, and payment data
 	var bookings []entity.Booking
 	if err := config.DB.Preload("Room.Category").
-		Preload("Payment"). // Load associated payment data
 		Where("user_id = ?", userID).
 		Find(&bookings).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to fetch booked rooms"})
 	}
 
 	// Build the response
-	var response []map[string]interface{}
+	var response []entity.GetUserRoomsResponse
 	for _, booking := range bookings {
 		// Check payment status for the current booking
-		var payment entity.Payment
+		var payment entity.Booking
 		isPaid := false
 		if err := config.DB.Where("booking_id = ?", booking.ID).First(&payment).Error; err == nil {
 			isPaid = payment.IsPaid
 		}
 
 		// Append booking details to the response
-		response = append(response, map[string]interface{}{
-			"booking_id":  booking.ID,
-			"room_id":     booking.Room.ID,
-			"room_name":   booking.Room.Name,
-			"category":    booking.Room.Category.Name,
-			"price":       booking.Room.Category.Price,
-			"start_date":  booking.StartDate,
-			"end_date":    booking.EndDate,
-			"total_price": booking.TotalPrice,
-			"is_paid":     isPaid,
+		response = append(response, entity.GetUserRoomsResponse{
+			BookingID:  booking.ID,
+			RoomID:     booking.Room.ID,
+			RoomName:   booking.Room.Name,
+			Category:   booking.Room.Category.Name,
+			Price:      booking.Room.Category.Price,
+			StartDate:  booking.StartDate,
+			EndDate:    booking.EndDate,
+			TotalPrice: booking.TotalPrice,
+			IsPaid:     isPaid,
 		})
 	}
 

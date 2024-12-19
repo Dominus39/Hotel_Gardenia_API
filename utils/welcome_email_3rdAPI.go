@@ -13,7 +13,7 @@ func SendWelcomeEmail(email, name string) error {
 	messages := []mailjet.InfoMessagesV31{
 		{
 			From: &mailjet.RecipientV31{
-				Email: "welcome@hotelgardenia.com",
+				Email: "yugoalexander@gmail.com",
 				Name:  "Hotel Gardenia",
 			},
 			To: &mailjet.RecipientsV31{

@@ -34,20 +34,19 @@ type Booking struct {
 	User       User      `json:"user" gorm:"foreignKey:UserID"`
 	RoomID     int       `json:"room_id" gorm:"not null"` // FK to Room
 	Room       Room      `json:"room" gorm:"foreignKey:RoomID"`
-	StartDate  time.Time `json:"start_date" gorm:"not null"`       // Start of booking
-	EndDate    time.Time `json:"end_date" gorm:"not null"`         // End of booking
-	TotalPrice float64   `json:"total_price" gorm:"not null"`      // Total cost
+	StartDate  time.Time `json:"start_date" gorm:"not null"`  // Start of booking
+	EndDate    time.Time `json:"end_date" gorm:"not null"`    // End of booking
+	TotalPrice float64   `json:"total_price" gorm:"not null"` // Total cost
+	IsPaid     bool      `json:"is_paid" gorm:"not null;default:false"`
 	CreatedAt  time.Time `json:"created_at" gorm:"autoCreateTime"` // Booking timestamp
 }
 
-type Payment struct {
-	ID        int        `json:"id" gorm:"primaryKey;autoIncrement"`
-	BookingID int        `json:"booking_id" gorm:"not null;unique"` // FK to Booking
-	Booking   Booking    `json:"-" gorm:"foreignKey:BookingID"`     // Avoid recursion by omitting JSON
-	Amount    float64    `json:"amount" gorm:"not null"`            // Payment amount
-	IsPaid    bool       `json:"is_paid" gorm:"not null;default:false"`
-	PaidAt    *time.Time `json:"paid_at"` // Time of payment (nullable if unpaid)
-	CreatedAt time.Time  `json:"created_at" gorm:"autoCreateTime"`
+type PaymentForBooking struct {
+	ID        int       `json:"id" gorm:"primaryKey;autoIncrement"`
+	BookingID int       `json:"booking_id" gorm:"not null;unique"` // FK to Booking
+	Booking   Booking   `json:"-" gorm:"foreignKey:BookingID"`     // Avoid recursion by omitting JSON
+	Amount    float64   `json:"amount" gorm:"not null"`            // Payment amount
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }
 
 type PaymentForTopUp struct {
