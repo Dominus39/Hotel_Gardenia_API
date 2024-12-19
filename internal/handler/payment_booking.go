@@ -3,6 +3,7 @@ package handler
 import (
 	config "MiniProjectPhase2/config/database"
 	"MiniProjectPhase2/entity"
+
 	"MiniProjectPhase2/utils"
 	"net/http"
 	"strconv"
@@ -51,46 +52,51 @@ func PayBooking(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid booking ID"})
 	}
 
+	// Begin GORM transaction
+	tx := config.DB.Begin()
+
 	// Find the booking by ID and ensure it belongs to the authenticated user
 	var booking entity.Booking
-	if err := config.DB.Where("id = ? AND user_id = ?", bookingID, userID).Preload("Room").First(&booking).Error; err != nil {
+	if err := tx.Where("id = ? AND user_id = ?", bookingID, userID).Preload("Room").First(&booking).Error; err != nil {
+		tx.Rollback()
 		return c.JSON(http.StatusNotFound, map[string]string{"message": "Booking not found"})
 	}
 
 	// Check if a payment already exists for this booking
 	var payment entity.PaymentForBooking
-	var paymentExists bool
-
-	err = config.DB.Where("booking_id = ?", bookingID).First(&payment).Error
-	if err != nil {
+	paymentExists := true
+	if err := tx.Where("booking_id = ?", bookingID).First(&payment).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			paymentExists = false
 		} else {
+			tx.Rollback()
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to query payment record"})
 		}
-	} else {
-		paymentExists = true
 	}
 
 	// If payment exists and is already paid, return an error
 	if paymentExists && booking.IsPaid {
+		tx.Rollback()
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Booking is already paid"})
 	}
 
 	// Find the user's account
 	var userAcc entity.User
-	if err := config.DB.First(&userAcc, userID).Error; err != nil {
+	if err := tx.First(&userAcc, userID).Error; err != nil {
+		tx.Rollback()
 		return c.JSON(http.StatusNotFound, map[string]string{"message": "User not found"})
 	}
 
 	// Check if the user has enough balance
 	if userAcc.Balance < booking.TotalPrice {
+		tx.Rollback()
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Insufficient balance"})
 	}
 
 	// Deduct the total price from the user's balance
 	userAcc.Balance -= booking.TotalPrice
-	if err := config.DB.Save(&user).Error; err != nil {
+	if err := tx.Save(&userAcc).Error; err != nil {
+		tx.Rollback()
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to update user balance"})
 	}
 
@@ -98,7 +104,8 @@ func PayBooking(c echo.Context) error {
 	if paymentExists {
 		booking.IsPaid = true
 		payment.CreatedAt = time.Now()
-		if err := config.DB.Save(&payment).Error; err != nil {
+		if err := tx.Save(&payment).Error; err != nil {
+			tx.Rollback()
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to update payment record"})
 		}
 	} else {
@@ -108,9 +115,15 @@ func PayBooking(c echo.Context) error {
 			Amount:    booking.TotalPrice,
 			CreatedAt: time.Now(),
 		}
-		if err := config.DB.Create(&payment).Error; err != nil {
+		if err := tx.Create(&payment).Error; err != nil {
+			tx.Rollback()
 			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to create payment record"})
 		}
+	}
+	// Save the booking updates
+	if err := tx.Save(&booking).Error; err != nil {
+		tx.Rollback()
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to update booking status"})
 	}
 
 	// Add a record to the user's history
@@ -120,15 +133,20 @@ func PayBooking(c echo.Context) error {
 		ActivityType: "Payment",
 		ReferenceID:  bookingID,
 	}
-	if err := config.DB.Create(&userHistory).Error; err != nil {
+	if err := tx.Create(&userHistory).Error; err != nil {
+		tx.Rollback()
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to record user activity"})
 	}
 
 	// Create the invoice via Xendit API
 	_, err = utils.CreateInvoice(booking, userAcc)
 	if err != nil {
+		tx.Rollback()
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to create invoice", "error": err.Error()})
 	}
+
+	// Commit transaction
+	tx.Commit()
 
 	// Respond with success message
 	return c.JSON(http.StatusOK, map[string]interface{}{

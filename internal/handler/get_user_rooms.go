@@ -53,7 +53,7 @@ func GetUserRooms(c echo.Context) error {
 		// Check payment status for the current booking
 		var payment entity.Booking
 		isPaid := false
-		if err := config.DB.Where("booking_id = ?", booking.ID).First(&payment).Error; err == nil {
+		if err := config.DB.Where("id = ?", booking.ID).First(&payment).Error; err == nil {
 			isPaid = payment.IsPaid
 		}
 

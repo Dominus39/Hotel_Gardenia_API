@@ -10,7 +10,7 @@ import (
 
 // CreateInvoice creates an invoice via Xendit API
 func CreateInvoice(booking entity.Booking, user entity.User) (*entity.Invoice, error) {
-	apiKey := "xnd_development_EV8LLejJV0hNNoeeNjFIfAr5uTXg99uq2hmvJfw1KKcvoMwYGH0JOyGPq38AP4s"
+	apiKey := "xnd_development_DOVNkmUB1mHJZ5rgSIZ6qpRpY3uU2b7o4TttU9canPe5G65587s3rYMWRpNDl14W"
 	apiUrl := "https://api.xendit.co/v2/invoices"
 
 	product := entity.ProductRequest{
