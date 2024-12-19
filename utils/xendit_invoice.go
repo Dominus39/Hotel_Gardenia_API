@@ -5,13 +5,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
 )
 
 // CreateInvoice creates an invoice via Xendit API
 func CreateInvoice(booking entity.Booking, user entity.User) (*entity.Invoice, error) {
-	apiKey := "xnd_development_DOVNkmUB1mHJZ5rgSIZ6qpRpY3uU2b7o4TttU9canPe5G65587s3rYMWRpNDl14W"
-	apiUrl := "https://api.xendit.co/v2/invoices"
+	apiKey := os.Getenv("XENDIT_API_SECRET")
+	apiUrl := os.Getenv("XENDIT_API_URL") + "/v2/invoices"
 
 	product := entity.ProductRequest{
 		Name:  booking.Room.Name,
