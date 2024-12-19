@@ -15,8 +15,8 @@ import (
 // @Tags Rooms
 // @Accept json
 // @Produce json
-// @Param booking body BookingRequest true "Booking Request"
-// @Success 200 {object} BookingResponse "Booking Successful"
+// @Param booking body entity.BookingRequest true "Booking Request"
+// @Success 200 {object} entity.BookingResponse "Booking Successful"
 // @Failure 400 {object} map[string]string "Invalid request parameters"
 // @Failure 404 {object} map[string]string "Room not found"
 // @Failure 500 {object} map[string]string "Booking failed"

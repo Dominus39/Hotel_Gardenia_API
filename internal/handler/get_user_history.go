@@ -10,16 +10,15 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// GetHistorygodoc
+// GetHistory godoc
 // @Summary Get user histories
 // @Description Retrieve all histories of the current user from the database.
 // @Tags User
 // @Accept json
 // @Produce json
-// @Security BearerAuth
 // @Success 200 {object} map[string]interface{} "Success message and list of user histories"
 // @Failure 500 {object} map[string]interface{} "Failed to retrieve histories"
-// @Router /histories [get]
+// @Router /users/history [get]
 func GetHistory(c echo.Context) error {
 	// Retrieve the current user from the context (set by the JWT middleware)
 	userClaims, ok := c.Get("user").(jwt.MapClaims)

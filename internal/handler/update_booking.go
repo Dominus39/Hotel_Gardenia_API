@@ -17,13 +17,13 @@ import (
 // @Accept json
 // @Produce json
 // @Param id path int true "Booking ID"
-// @Param update body UpdateBookingRequest true "Update Booking Request"
+// @Param update body entity.UpdateBookingRequest true "Update Booking Request"
 // @Success 200 {object} map[string]string "Booking successfully updated"
 // @Failure 400 {object} map[string]string "Invalid request"
 // @Failure 404 {object} map[string]string "Booking or room not found"
 // @Failure 401 {object} map[string]string "Unauthorized"
 // @Failure 500 {object} map[string]string "Internal server error"
-// @Router /bookings/{id} [put]
+// @Router /bookings/{id} [post]
 func UpdateBooking(c echo.Context) error {
 	// Extract user claims from JWT
 	user := c.Get("user")

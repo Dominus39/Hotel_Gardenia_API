@@ -16,13 +16,13 @@ import (
 // @Tags Rooms
 // @Accept json
 // @Produce json
-// @Param cancel body CancelBookingRequest true "Cancel Booking Request"
+// @Param id path int true "Booking ID"
 // @Success 200 {object} map[string]string "Cancellation Successful"
 // @Failure 400 {object} map[string]string "Invalid request parameters"
 // @Failure 403 {object} map[string]string "Not authorized to cancel this booking"
 // @Failure 404 {object} map[string]string "Booking not found"
 // @Failure 500 {object} map[string]string "Cancellation failed"
-// @Router /rooms/cancel [post]
+// @Router /rooms/cancel/{id} [delete]
 func CancelBooking(c echo.Context) error {
 	// Extract user claims from JWT
 	user := c.Get("user")

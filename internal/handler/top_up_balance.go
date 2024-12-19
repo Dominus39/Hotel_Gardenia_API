@@ -17,7 +17,7 @@ import (
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param topup body TopUpRequest true "Top-Up Request"
+// @Param topup body entity.TopUpRequest true "Top-Up Request"
 // @Success 200 {object} map[string]interface{} "Top-Up Successful"
 // @Failure 400 {object} map[string]string "Invalid request parameters"
 // @Failure 500 {object} map[string]string "Top-Up failed"

@@ -18,9 +18,9 @@ import (
 	echoswagger "github.com/swaggo/echo-swagger"
 )
 
-// @title GC 3 API
+// @title Mini Project Rental Hotel
 // @version 1.0
-// @description social media hactivgram
+// @description Hotel gardenia APP
 // @host localhost:8080
 // @BasePath /
 func main() {
@@ -52,8 +52,7 @@ func main() {
 	private.GET("/rooms/users", handler.GetUserRooms)
 	private.POST("/rooms/update/:id", handler.UpdateBooking)
 	private.POST("/rooms/payment/:id", handler.PayBooking)
-	private.DELETE("/rooms/booking/:id", handler.CancelBooking)
-
+	private.DELETE("/rooms/cancel/:id", handler.CancelBooking)
 	private.GET("/users/history", handler.GetHistory)
 
 	port := os.Getenv("PORT")

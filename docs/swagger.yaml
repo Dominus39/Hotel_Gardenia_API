@@ -1,0 +1,479 @@
+basePath: /
+definitions:
+  entity.BookingRequest:
+    properties:
+      days:
+        type: integer
+      room_id:
+        type: integer
+      start_date:
+        type: string
+    required:
+    - days
+    - room_id
+    - start_date
+    type: object
+  entity.BookingResponse:
+    properties:
+      category:
+        type: string
+      message:
+        type: string
+      room_name:
+        type: string
+      total_price:
+        type: number
+    type: object
+  entity.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  entity.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  entity.RegisterUser:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  entity.RoomResponse:
+    properties:
+      category:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
+  entity.TopUpRequest:
+    properties:
+      amount:
+        type: number
+    required:
+    - amount
+    type: object
+  entity.UpdateBookingRequest:
+    properties:
+      new_days:
+        type: integer
+      new_room_id:
+        type: integer
+      start_date:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Hotel gardenia APP
+  title: Mini Project Rental Hotel
+  version: "1.0"
+paths:
+  /bookings/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Allows users to change their booked room or the number of booking
+        days.
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Booking Request
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Booking successfully updated
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Booking or room not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a booked room or duration
+      tags:
+      - Bookings
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all available rooms with name, category, price, and
+        stock.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of rooms
+          schema:
+            items:
+              $ref: '#/definitions/entity.RoomResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all available rooms
+      tags:
+      - Rooms
+  /rooms/booked:
+    get:
+      consumes:
+      - application/json
+      description: Fetch all rooms currently booked by the authenticated user, including
+        payment status.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of booked rooms with payment status
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get booked rooms for the authenticated user
+      tags:
+      - Rooms
+  /rooms/booking:
+    post:
+      consumes:
+      - application/json
+      description: Book a room for a given number of days and start date.
+      parameters:
+      - description: Booking Request
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/entity.BookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Booking Successful
+          schema:
+            $ref: '#/definitions/entity.BookingResponse'
+        "400":
+          description: Invalid request parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Room not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Booking failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Book a room
+      tags:
+      - Rooms
+  /rooms/cancel/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Cancel a user's booking by booking ID. Only the owner of the booking
+        can cancel it.
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Cancellation Successful
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Not authorized to cancel this booking
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Booking not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Cancellation failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Cancel a booking
+      tags:
+      - Rooms
+  /rooms/payment/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Pay the total price of a booking with the user's balance and mark
+        it as paid.
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Payment successful
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Insufficient balance or invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Booking not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Payment failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Pay for a booking
+      tags:
+      - Payments
+  /users/history:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all histories of the current user from the database.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message and list of user histories
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to retrieve histories
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get user histories
+      tags:
+      - User
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows users to login by providing email and password.
+      parameters:
+      - description: Login User
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/entity.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.LoginResponse'
+        "400":
+          description: Invalid Request Parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid Password
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Invalid Generate Token
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login a user
+      tags:
+      - Users
+  /users/profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the authenticated user's profile, including their balance.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized access
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get user profile
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided details.
+      parameters:
+      - description: Register User
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RegisterUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message and user details
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid Request Parameters
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Register Failed
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register a new user
+      tags:
+      - Users
+  /users/topup:
+    post:
+      consumes:
+      - application/json
+      description: Authenticated users can top up their balance.
+      parameters:
+      - description: Top-Up Request
+        in: body
+        name: topup
+        required: true
+        schema:
+          $ref: '#/definitions/entity.TopUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Top-Up Successful
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Top-Up failed
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Top up user balance
+      tags:
+      - Users
+swagger: "2.0"
