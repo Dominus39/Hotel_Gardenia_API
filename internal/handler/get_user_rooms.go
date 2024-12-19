@@ -46,6 +46,10 @@ func GetUserRooms(c echo.Context) error {
 		Find(&bookings).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to fetch booked rooms"})
 	}
+	// Check if there are no bookings
+	if len(bookings) == 0 {
+		return c.JSON(http.StatusOK, map[string]string{"message": "You have no booked room"})
+	}
 
 	// Build the response
 	var response []entity.GetUserRoomsResponse

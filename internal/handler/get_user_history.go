@@ -10,16 +10,16 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// GetUserActivities godoc
-// @Summary Get user activities
-// @Description Retrieve all activities of the current user from the database.
+// GetHistorygodoc
+// @Summary Get user histories
+// @Description Retrieve all histories of the current user from the database.
 // @Tags User
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} map[string]interface{} "Success message and list of user activities"
-// @Failure 500 {object} map[string]interface{} "Failed to retrieve activities"
-// @Router /activities [get]
+// @Success 200 {object} map[string]interface{} "Success message and list of user histories"
+// @Failure 500 {object} map[string]interface{} "Failed to retrieve histories"
+// @Router /histories [get]
 func GetHistory(c echo.Context) error {
 	// Retrieve the current user from the context (set by the JWT middleware)
 	userClaims, ok := c.Get("user").(jwt.MapClaims)
@@ -47,7 +47,6 @@ func GetHistory(c echo.Context) error {
 
 	// Prepare the response
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "User history retrieved successfully",
 		"history": history,
 	})
 }

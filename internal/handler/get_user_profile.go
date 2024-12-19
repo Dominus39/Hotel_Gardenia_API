@@ -53,8 +53,5 @@ func UserProfile(c echo.Context) error {
 		Balance: userProfile.Balance,
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "User profile retrieved successfully",
-		"data":    response,
-	})
+	return c.JSON(http.StatusOK, response)
 }
