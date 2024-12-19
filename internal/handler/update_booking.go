@@ -144,7 +144,7 @@ func UpdateBooking(c echo.Context) error {
 	history := entity.UserHistory{
 		UserID:       userID,
 		Description:  "Updated booking for room: " + booking.Room.Name,
-		ActivityType: "update_booking",
+		ActivityType: "Update Booking",
 		ReferenceID:  booking.ID,
 	}
 	if err := config.DB.Create(&history).Error; err != nil {

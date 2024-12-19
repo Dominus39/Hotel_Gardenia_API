@@ -89,7 +89,7 @@ func BookRoom(c echo.Context) error {
 	log := entity.UserHistory{
 		UserID:       userID,
 		Description:  "Booked room " + room.Name,
-		ActivityType: "BOOKING",
+		ActivityType: "Booking Room",
 		ReferenceID:  newBooking.ID,
 	}
 

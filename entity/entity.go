@@ -59,8 +59,8 @@ type PaymentForTopUp struct {
 
 type UserHistory struct {
 	ID           int       `json:"id" gorm:"not null;primaryKey"`
-	UserID       int       `json:"user_id" gorm:"column:user_id;not null"`      // FK to User
-	User         User      `json:"user" gorm:"foreignKey:UserID;references:ID"` // Correct FK
+	UserID       int       `json:"user_id" gorm:"column:user_id;not null"`   // FK to User
+	User         User      `json:"-" gorm:"foreignKey:UserID;references:ID"` // Correct FK
 	Description  string    `json:"description" gorm:"column:description;not null;size:255"`
 	ActivityType string    `json:"activity_type" gorm:"column:activity_type;size:50"` // Type of activity
 	ReferenceID  int       `json:"reference_id" gorm:"column:reference_id"`           // Optional ID for related actions
