@@ -53,7 +53,7 @@ func TestGetRooms(t *testing.T) {
 	err = handler.GetRooms(c)
 
 	// Assert the response
-	assert.NoError(t, err) // Ensure no error occurs during execution
+	assert.NoError(t, err)
 
 	// Check the status code and response body
 	assert.Equal(t, http.StatusOK, rec.Code)

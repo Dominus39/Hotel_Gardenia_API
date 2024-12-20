@@ -94,7 +94,6 @@ func BookRoom(c echo.Context) error {
 	}
 
 	if err := config.DB.Create(&log).Error; err != nil {
-		// Log the error internally without breaking the response
 		c.Logger().Error("Failed to log user activity: ", err)
 	}
 

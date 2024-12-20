@@ -19,7 +19,7 @@ import (
 )
 
 func TestTopUpBalanceAmountValidation(t *testing.T) {
-	// Step 1: Mock the database connection
+	// Mock the database connection
 	mockDB, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer mockDB.Close()
@@ -29,10 +29,10 @@ func TestTopUpBalanceAmountValidation(t *testing.T) {
 	}), &gorm.Config{})
 	assert.NoError(t, err)
 
-	// Step 2: Define test payload with invalid (negative) amount
+	// Define test payload
 	e := echo.New()
 	reqBody := entity.TopUpRequest{
-		Amount: -500, // Invalid amount (negative)
+		Amount: -500,
 	}
 	body, _ := json.Marshal(reqBody)
 	req := httptest.NewRequest(http.MethodPost, "/users/topup", bytes.NewReader(body))
@@ -42,10 +42,9 @@ func TestTopUpBalanceAmountValidation(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	// Mock user data to simulate a logged-in user
 	// Generate JWT token (mock)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id": 1, // Simulate user ID in claims
+		"id": 1,
 	})
 	// Sign token with a mock secret key
 	tokenString, _ := token.SignedString([]byte("12345"))
@@ -56,12 +55,12 @@ func TestTopUpBalanceAmountValidation(t *testing.T) {
 		"id": float64(1),
 	})
 
-	// Step 4: Call the handler
+	// Call the handler
 	err = handler.TopUpBalance(c)
 
-	// Step 5: Assertions
-	assert.NoError(t, err)                           // Check that the handler runs without error
-	assert.Equal(t, http.StatusBadRequest, rec.Code) // Expect a 400 Bad Request response
+	// Assertions
+	assert.NoError(t, err)
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
 
 	// Check if the response message indicates invalid amount
 	var resp map[string]string

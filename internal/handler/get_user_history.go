@@ -20,7 +20,7 @@ import (
 // @Failure 500 {object} map[string]interface{} "Failed to retrieve histories"
 // @Router /users/history [get]
 func GetHistory(c echo.Context) error {
-	// Retrieve the current user from the context (set by the JWT middleware)
+	// Retrieve the current user from the context
 	userClaims, ok := c.Get("user").(jwt.MapClaims)
 	if !ok {
 		return c.JSON(http.StatusUnauthorized, map[string]interface{}{

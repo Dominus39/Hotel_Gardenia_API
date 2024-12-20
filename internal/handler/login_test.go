@@ -19,7 +19,7 @@ import (
 
 func TestLoginRequestPayload(t *testing.T) {
 	// Mock the database connection
-	mockDB, _, err := sqlmock.New()
+	mockDB, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer mockDB.Close()
 
@@ -27,6 +27,11 @@ func TestLoginRequestPayload(t *testing.T) {
 		Conn: mockDB,
 	}), &gorm.Config{})
 	assert.NoError(t, err)
+
+	mock.ExpectQuery("^SELECT (.+) FROM \"users\" WHERE email = \\$1 ORDER BY \"users\".\"id\" LIMIT 1").
+		WithArgs("test@example.com").
+		WillReturnRows(sqlmock.NewRows([]string{"id", "email", "password"}).
+			AddRow(1, "test@example.com", "$2a$10$hashedpassword123"))
 
 	// Define a mock login request payload
 	e := echo.New()
