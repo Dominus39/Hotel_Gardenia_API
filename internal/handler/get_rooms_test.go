@@ -17,7 +17,7 @@ import (
 )
 
 func TestGetRooms(t *testing.T) {
-	// Step 1: Mock the database connection
+	// Mock the database connection
 	mockDB, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer mockDB.Close()
@@ -27,7 +27,7 @@ func TestGetRooms(t *testing.T) {
 	}), &gorm.Config{})
 	assert.NoError(t, err)
 
-	// Step 2: Prepare mock data for rooms
+	// Prepare mock data for rooms
 	rows := sqlmock.NewRows([]string{"id", "name", "category_id", "stock"}).
 		AddRow(1, "Room 101", 1, 10).
 		AddRow(2, "Room 102", 2, 5)
@@ -35,27 +35,27 @@ func TestGetRooms(t *testing.T) {
 	// Mock the query for rooms
 	mock.ExpectQuery("^SELECT \\* FROM \"rooms\"").WillReturnRows(rows)
 
-	// Step 3: Mock the query for categories
+	// Mock the query for categories
 	mock.ExpectQuery("^SELECT \\* FROM \"categories\"").WillReturnRows(
 		sqlmock.NewRows([]string{"id", "name", "price"}).
 			AddRow(1, "Deluxe", 100).
 			AddRow(2, "Standard", 50),
 	)
 
-	// Step 4: Create a new HTTP request for GET /rooms
+	// Create a new HTTP request for GET /rooms
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/rooms", nil)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	// Step 5: Call the handler function
+	// Call the handler function
 	err = handler.GetRooms(c)
 
-	// Step 6: Assert the response
+	// Assert the response
 	assert.NoError(t, err) // Ensure no error occurs during execution
 
-	// Step 7: Check the status code and response body
+	// Check the status code and response body
 	assert.Equal(t, http.StatusOK, rec.Code)
 
 	var rooms []entity.RoomResponse

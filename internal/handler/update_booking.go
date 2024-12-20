@@ -143,7 +143,7 @@ func UpdateBooking(c echo.Context) error {
 	// Log this action in user history
 	history := entity.UserHistory{
 		UserID:       userID,
-		Description:  "Updated booking for room: " + booking.Room.Name,
+		Description:  "Updated booking for room " + booking.Room.Name,
 		ActivityType: "Update Booking",
 		ReferenceID:  booking.ID,
 	}
