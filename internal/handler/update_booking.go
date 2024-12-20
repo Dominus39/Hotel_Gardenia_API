@@ -5,6 +5,7 @@ import (
 	"MiniProjectPhase2/entity"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -54,6 +55,11 @@ func UpdateBooking(c echo.Context) error {
 	var req entity.UpdateBookingRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid request"})
+	}
+	// Validate the new start date
+	currentDate := time.Now().Truncate(24 * time.Hour)
+	if !req.StartDate.IsZero() && req.StartDate.Before(currentDate) {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Start date cannot be in the past"})
 	}
 
 	// Find the existing booking

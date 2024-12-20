@@ -4,6 +4,7 @@ import (
 	config "MiniProjectPhase2/config/database"
 	"MiniProjectPhase2/entity"
 	"net/http"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -50,6 +51,12 @@ func BookRoom(c echo.Context) error {
 
 	if req.RoomID == 0 || req.Days <= 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Room ID and number of days are required"})
+	}
+
+	// Validate the StartDate
+	currentDate := time.Now().Truncate(24 * time.Hour)
+	if req.StartDate.Before(currentDate) {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Start date cannot be in the past"})
 	}
 
 	// Find the room by ID with its category
