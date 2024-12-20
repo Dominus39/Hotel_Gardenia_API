@@ -86,60 +86,6 @@ info:
   title: Mini Project Rental Hotel
   version: "1.0"
 paths:
-  /bookings/{id}:
-    post:
-      consumes:
-      - application/json
-      description: Allows users to change their booked room or the number of booking
-        days.
-      parameters:
-      - description: Booking ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update Booking Request
-        in: body
-        name: update
-        required: true
-        schema:
-          $ref: '#/definitions/entity.UpdateBookingRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Booking successfully updated
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Invalid request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "404":
-          description: Booking or room not found
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal server error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Update a booked room or duration
-      tags:
-      - Bookings
   /rooms:
     get:
       consumes:
@@ -324,6 +270,60 @@ paths:
       summary: Pay for a booking
       tags:
       - Payments
+  /rooms/update/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Allows users to change their booked room or the number of booking
+        days.
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Booking Request
+        in: body
+        name: update
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Booking successfully updated
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Booking or room not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a booked room or duration
+      tags:
+      - Bookings
   /users/history:
     get:
       consumes:

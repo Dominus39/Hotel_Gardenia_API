@@ -24,7 +24,7 @@ import (
 // @Failure 404 {object} map[string]string "Booking or room not found"
 // @Failure 401 {object} map[string]string "Unauthorized"
 // @Failure 500 {object} map[string]string "Internal server error"
-// @Router /bookings/{id} [post]
+// @Router /rooms/update/{id} [post]
 func UpdateBooking(c echo.Context) error {
 	// Extract user claims from JWT
 	user := c.Get("user")
@@ -58,7 +58,7 @@ func UpdateBooking(c echo.Context) error {
 	}
 	// Validate the new start date
 	currentDate := time.Now().Truncate(24 * time.Hour)
-	if !req.StartDate.IsZero() && req.StartDate.Before(currentDate) {
+	if req.StartDate.Before(currentDate) {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Start date cannot be in the past"})
 	}
 
