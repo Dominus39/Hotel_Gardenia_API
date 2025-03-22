@@ -2,7 +2,7 @@
 
 # Overview
 
-Booking System is a web application designed for hotel reservations, allowing users to search for available rooms, book them, make payments, cancel reservations, and top up their balance. 
+Hotel Gardenia Booking API is a web-based system designed to streamline the process of reserving hotel rooms. Users can search for available rooms, make reservations, process payments, cancel bookings, and manage their accounts within a single application.
 
 # Features
 
